@@ -18,16 +18,21 @@ def start():
    grid_h, grid_w = 20, 12
    # set the size of the drawing canvas (the displayed window)
    canvas_h, canvas_w = 40 * grid_h, 50 * grid_w
+
    stddraw.setCanvasSize(canvas_w, canvas_h)
    # set the scale of the coordinate system for the drawing canvas
-   stddraw.setXscale(-0.5, grid_w + 4)
+   stddraw.setXscale(-0.5, grid_w + 4) 
    stddraw.setYscale(-0.5, grid_h - 0.5)
 
    # set the game grid dimension values stored and used in the Tetromino class
    Tetromino.grid_height = grid_h
    Tetromino.grid_width = grid_w
    # create the game grid
-   grid = GameGrid(grid_h, grid_w, 200)
+
+   display_game_menu(grid_h, grid_w)
+   game_speed = diff_select(grid_h, grid_w)
+
+   grid = GameGrid(grid_h, grid_w, game_speed)
    # create the first tetromino to enter the game grid
    # by using the create_tetromino function defined below 
    current_tetromino = create_tetromino()
@@ -38,8 +43,8 @@ def start():
 
    # display a simple menu before opening the game
    # by using the display_game_menu function defined below
-   display_game_menu(grid_h, grid_w)
-
+   
+   print(game_speed)
    # the main game loop
    while True:
       # check for any user interaction via the keyboard
@@ -76,9 +81,12 @@ def start():
          game_over = grid.update_grid(tiles, pos)
          # end the main game loop if the game is over
          if game_over:
-            break
+            display_game_over(grid.score)
+
          # create the next tetromino to enter the game grid
          # by using the create_tetromino function defined below
+         
+         grid.merge()
          grid.clear_lines()
          
          current_tetromino = next_tetromino
@@ -91,8 +99,6 @@ def start():
       # display the game grid with the current tetromino
       grid.display()
  
-   # print a message on the console when the game is over
-   print("Game over")
 
 # A function for creating random shaped tetrominoes to enter the game grid
 def create_tetromino():
@@ -147,9 +153,103 @@ def display_game_menu(grid_height, grid_width):
          # check if these coordinates are inside the button
          if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
             if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h:
-               break  # break the loop to end the method and start the game
+               break
+
+def diff_select(grid_height, grid_width):
+   background_color = Color(42, 69, 99)
+   button_color = Color(25, 255, 228)
+   text_color = Color(31, 160, 239)
+   img_center_x, img_center_y = (grid_width + 3) / 2, grid_height - 7
+   stddraw.clear(background_color)
+   
+   # Display difficulty selection buttons
+   difficulty_button_w, difficulty_button_h = grid_width - 1.5, 2
+   difficulty_button_blc_x = img_center_x - difficulty_button_w / 2
+               
+   # Calculate button position
+   button_y = img_center_y - 2
+   
+   
+   stddraw.setPenColor(text_color)
+   stddraw.boldText(img_center_x, button_y + 3, "Select a Difficulty")
+
+   stddraw.setPenColor(button_color)
+   stddraw.filledRectangle(difficulty_button_blc_x, button_y, difficulty_button_w, difficulty_button_h)
+   stddraw.setFontFamily("Arial")
+   stddraw.setFontSize(25)
+   stddraw.setPenColor(text_color)
+   stddraw.text(img_center_x, button_y + 1, "Easy")
+   
+   stddraw.setPenColor(button_color)
+   stddraw.filledRectangle(difficulty_button_blc_x, button_y-3, difficulty_button_w, difficulty_button_h)
+   stddraw.setFontFamily("Arial")
+   stddraw.setFontSize(25)
+   stddraw.setPenColor(text_color)
+   stddraw.text(img_center_x, button_y - 2, "Medium")
+   
+       
+   stddraw.setPenColor(button_color)
+   stddraw.filledRectangle(difficulty_button_blc_x, button_y-6, difficulty_button_w, difficulty_button_h)
+   stddraw.setFontFamily("Arial")
+   stddraw.setFontSize(25)
+   stddraw.setPenColor(text_color)
+   stddraw.text(img_center_x, button_y - 5, "Hard")
+   # Loop until a difficulty is selected
+   while True:
+       stddraw.show(50)
+       if stddraw.mousePressed():
+         mouse_x, mouse_y = stddraw.mouseX(), stddraw.mouseY()
+         if (difficulty_button_blc_x <= mouse_x <= difficulty_button_blc_x + difficulty_button_w and
+                   button_y - difficulty_button_h  <= mouse_y <= button_y + difficulty_button_h):
+            game_speed = 300
+            return game_speed
+         elif (difficulty_button_blc_x <= mouse_x <= difficulty_button_blc_x + difficulty_button_w and
+                   button_y - 1.5 - difficulty_button_h <= mouse_y <= button_y - 1.5 + difficulty_button_h):
+            game_speed = 250
+            return game_speed
+
+         elif(difficulty_button_blc_x <= mouse_x <= difficulty_button_blc_x + difficulty_button_w and
+                   button_y - 3 - difficulty_button_h <= mouse_y <= button_y - 3 + difficulty_button_h):
+            game_speed = 150
+            return game_speed
 
 
+def display_game_over(score):
+   # the colors used for the menu
+   background_color = Color(42, 69, 99)
+   button_color = Color(25, 255, 228)
+   text_color = Color(31, 160, 239)
+   # clear the background drawing canvas to background_color
+   stddraw.clear(background_color)
+
+   # the dimensions for the start game button
+   button_w, button_h = 10, 2
+   # the coordinates of the bottom left corner for the start game button
+   button_blc_x, button_blc_y = 4, 4
+   # add the start game button as a filled rectangle
+   stddraw.setPenColor(button_color)
+   stddraw.filledRectangle(button_blc_x, button_blc_y, button_w, button_h)
+   # add the text on the start game button
+   stddraw.setFontFamily("Arial")
+   stddraw.setFontSize(45)
+   stddraw.setPenColor(text_color)
+ 
+   stddraw.boldText(7.5, 15, "Game Over")
+   stddraw.boldText(7.5, 15, str(score))
+
+   # the user interaction loop for the simple menu
+   while True:
+      # display the menu and wait for a short time (50 ms)
+      stddraw.show(50)
+      # check if the mouse has been left-clicked on the start game button
+      if stddraw.mousePressed():
+         # get the coordinates of the most recent location at which the mouse
+         # has been left-clicked
+         mouse_x, mouse_y = stddraw.mouseX(), stddraw.mouseY()
+         # check if these coordinates are inside the button
+         if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
+            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h:
+               break
 # start() function is specified as the entry point (main function) from which
 # the program starts execution
 if __name__ == '__main__':

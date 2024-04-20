@@ -3,6 +3,7 @@ from lib.color import Color  # used for coloring the game grid
 from point import Point  # used for tile positions
 import numpy as np  # fundamental Python module for scientific computing
 import copy as cp
+from tile import Tile
 # A class for modeling the game grid
 class GameGrid:
    # A constructor for creating the game grid based on the given arguments
@@ -38,6 +39,7 @@ class GameGrid:
       stddraw.clear(self.empty_cell_color)
       # draw the game grid
       self.draw_grid()
+
       # draw the current/active tetromino if it is not None
       # (the case when the game grid is updated)
       if self.current_tetromino is not None:
@@ -168,6 +170,11 @@ class GameGrid:
                   self.game_over = True
       # return the value of the game_over flag
       return self.game_over
+   
+   def merge(self):
+      while Tile.merge_matches is not 0:
+         self.score += Tile.merge_tiles(self.tile_matrix, self.score)
+
 
    def draw_info(self):
 
