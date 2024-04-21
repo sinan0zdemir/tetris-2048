@@ -30,8 +30,13 @@ class GameGrid:
       self.box_thickness = 3 * self.line_thickness
       self.info_line_thickness = 3 * self.line_thickness
       
+      # set initial score to zero
       self.score = 0
+
+      # set game speed to argument
       self.game_speed = game_speed
+
+      self.restart_flag = 0
 
    # A method for displaying the game grid
    def display(self):
@@ -39,6 +44,7 @@ class GameGrid:
       stddraw.clear(self.empty_cell_color)
       # draw the game grid
       self.draw_grid()
+      self.score = Tile.merge_tiles(self.tile_matrix, self.score)
 
       # draw the current/active tetromino if it is not None
       # (the case when the game grid is updated)
@@ -142,10 +148,6 @@ class GameGrid:
         for col in range(self.grid_width):
             self.tile_matrix[self.grid_height - 1][col] = None
         
-        # Set the top row to contain None values
-        for col in range(self.grid_width):
-            self.tile_matrix[self.grid_height - 1][col] = None
-
  
    # A method that locks the tiles of a landed tetromino on the grid checking
    # if the game is over due to having any tile above the topmost grid row.
@@ -171,11 +173,10 @@ class GameGrid:
       # return the value of the game_over flag
       return self.game_over
    
-   def merge(self):
-      while Tile.merge_matches is not 0:
-         self.score += Tile.merge_tiles(self.tile_matrix, self.score)
 
 
+
+   # draw function for score, restart button and next tetromino
    def draw_info(self):
 
       # info grid settings
@@ -200,20 +201,20 @@ class GameGrid:
          next_display.bottom_left_cell.y  = 1.5
          next_display.draw()
 
-      # Stop Game button
+      # Restart Game button
       stddraw.setPenColor(self.boundary_color)
       stddraw.filledRectangle(self.grid_width + 0.5, self.grid_height / 2 + 1, self.info_width - 2, 1)
       stddraw.setPenColor(Color(255, 255, 255))
       stddraw.setFontFamily("Arial")
       stddraw.setFontSize(20)
       stddraw.boldText(self.grid_width + 2, self.grid_height / 2 + 1.5, "Restart")
-      # Pause Game button
-      stddraw.setPenColor(self.boundary_color)
-      stddraw.filledRectangle(self.grid_width + 0.5, self.grid_height / 2 - 0.25, self.info_width - 2, 1)
-      stddraw.setPenColor(Color(255, 255, 255))
-      stddraw.setFontFamily("Arial")
-      stddraw.setFontSize(20)
-      stddraw.boldText(self.grid_width + 2, self.grid_height / 2 + 0.25, "Pause")
+      # # Pause Game button
+      # stddraw.setPenColor(self.boundary_color)
+      # stddraw.filledRectangle(self.grid_width + 0.5, self.grid_height / 2 - 0.25, self.info_width - 2, 1)
+      # stddraw.setPenColor(Color(255, 255, 255))
+      # stddraw.setFontFamily("Arial")
+      # stddraw.setFontSize(20)
+      # stddraw.boldText(self.grid_width + 2, self.grid_height / 2 + 0.25, "Pause")
 
       if stddraw.mousePressed():
          # get the x and y coordinates of the locations of the mouse
@@ -221,8 +222,8 @@ class GameGrid:
          # check if these coordinates are inside the restart button
          if mouse_x >= self.grid_width + 0.5 and mouse_x <= self.grid_width + self.info_width - 1.5:
             if mouse_y >= self.grid_height / 2 + 1 and mouse_y <= self.grid_height / 2 + 2:
-               self.game_over = True
-         # check if these coordinates are inside the pause button
-         if mouse_x >= self.grid_width + 0.5 and mouse_x <= self.grid_width + self.info_width - 1.5:
-            if mouse_y >= self.grid_height / 2 - 0.25 and mouse_y <= self.grid_height / 2 + 0.75:
-               self.pause_game_screen()
+               self.restart_flag = 1
+         # # check if these coordinates are inside the pause button
+         # if mouse_x >= self.grid_width + 0.5 and mouse_x <= self.grid_width + self.info_width - 1.5:
+         #    if mouse_y >= self.grid_height / 2 - 0.25 and mouse_y <= self.grid_height / 2 + 0.75:
+         #       self.pause_game_screen()

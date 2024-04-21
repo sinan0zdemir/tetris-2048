@@ -88,7 +88,7 @@ class Tile:
       stddraw.setFontSize(Tile.font_size)
       stddraw.text(position.x, position.y, str(self.number))
 
-   def merge_matches(self, tile):
+   def if_matches(self, tile):
         # if the number on the tile is equal to the number on the current tile
         if self.number == tile.number and self.number < 2048:
             # set the number on the current tile to the sum of the two numbers
@@ -116,7 +116,7 @@ class Tile:
                     # on the tile to the top merge them
                     if tile_matrix[row][col] != None and tile_matrix[row + 1][col] != None and tile_matrix[row][
                         col].number == tile_matrix[row + 1][col].number:
-                        score += tile_matrix[row][col].merge_matches(tile_matrix[row + 1][col])
+                        score += tile_matrix[row][col].if_matches(tile_matrix[row + 1][col])
                         tile_matrix[row + 1][col] = None
                         # After merging the tiles, move the tiles down
                         for row_index in range(row + 1, len(tile_matrix)):
