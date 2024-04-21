@@ -208,13 +208,6 @@ class GameGrid:
       stddraw.setFontFamily("Arial")
       stddraw.setFontSize(20)
       stddraw.boldText(self.grid_width + 2, self.grid_height / 2 + 1.5, "Restart")
-      # # Pause Game button
-      # stddraw.setPenColor(self.boundary_color)
-      # stddraw.filledRectangle(self.grid_width + 0.5, self.grid_height / 2 - 0.25, self.info_width - 2, 1)
-      # stddraw.setPenColor(Color(255, 255, 255))
-      # stddraw.setFontFamily("Arial")
-      # stddraw.setFontSize(20)
-      # stddraw.boldText(self.grid_width + 2, self.grid_height / 2 + 0.25, "Pause")
 
       if stddraw.mousePressed():
          # get the x and y coordinates of the locations of the mouse
@@ -223,7 +216,3 @@ class GameGrid:
          if mouse_x >= self.grid_width + 0.5 and mouse_x <= self.grid_width + self.info_width - 1.5:
             if mouse_y >= self.grid_height / 2 + 1 and mouse_y <= self.grid_height / 2 + 2:
                self.restart_flag = 1
-         # # check if these coordinates are inside the pause button
-         # if mouse_x >= self.grid_width + 0.5 and mouse_x <= self.grid_width + self.info_width - 1.5:
-         #    if mouse_y >= self.grid_height / 2 - 0.25 and mouse_y <= self.grid_height / 2 + 0.75:
-         #       self.pause_game_screen()
